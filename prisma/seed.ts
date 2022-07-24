@@ -48,7 +48,31 @@ async function main() {
     },
   });
 
-  console.log({ user1, user2 });
+  const user3 = await prisma.user.create({
+    data: {
+      email: 'bart123@simpson.com',
+      firstname: 'Bart123',
+      lastname: 'Simpson123',
+      role: 'ADMIN',
+      password: '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm', // secret42
+      posts: {
+        create: [
+          {
+            title: 'Subscribe to GraphQL Weekly for community news',
+            content: 'https://graphqlweekly.com/',
+            published: true,
+          },
+          {
+            title: 'Follow Prisma on Twitter',
+            content: 'https://twitter.com/prisma',
+            published: false,
+          },
+        ],
+      },
+    },
+  });
+
+  console.log({ user1, user2, user3 });
 }
 
 main()
