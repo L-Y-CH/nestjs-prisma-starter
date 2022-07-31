@@ -20,22 +20,80 @@ model User {
   password  String
   firstname String?
   lastname  String?
-  posts     Post[]
   role      Role
+  book      Book[]
+  shelf     Shelf[]
+} 
+
+model Book {
+  id          String          @id @default(cuid())
+  bookUniId   String          
+  itemId      String          @db.Char(10)
+  ownerId     String
+  curVersion  String
+  progress    String
+  percnetage  Int
+  format      epubFormat
+  status      dispatchStatus
+  createAt    DateTime        @default(now())
+  updateAt    DateTime        @updatedAt
+  owner       User            @relation(fields: [ownerId], references: [id])
+  item        Item            @relation(fields: [itemId], references: [id])
+  shelf       Shelf[]
+
+  @@unique([bookUniId, ownerId])
 }
 
-model Post {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  published Boolean
-  title     String
-  content   String?
-  author    User?    @relation(fields: [authorId], references: [id])
-  authorId  String?
+model Shelf {
+  id      String  @id @default(cuid())
+  name    String
+  ownerId String
+  owner   User    @relation(fields: [ownerId], references: [id])
+  book    Book[]
+}
+
+model Item{
+  id          String    @id @db.Char(10) @map("item")
+  sub         String?   @db.Char(6)
+  info        Json
+  createAt    DateTime  @default(now())
+  updateAt    DateTime  @updatedAt
+  book        Book[]
+  category    Category? @relation(fields: [sub], references: [sub])
+  contributor Contributor?
+}
+
+model Category {
+  sub       String    @id @db.Char(6)
+  name      String    @db.Char(64)
+  isActive  Boolean   @default(true)
+  createAt  DateTime  @default(now())
+  updateAt  DateTime  @updatedAt
+  item      Item[]
+}
+
+model Contributor {
+  id          String    @id @db.Char(10) @map("item")
+  author      String
+  illustrator String
+  editor      String
+  translator  String
+  createAt    DateTime  @default(now())
+  updateAt    DateTime  @updatedAt
+  item        Item      @relation(fields: [id], references: [id])
 }
 
 enum Role {
   ADMIN
   USER
+}
+
+enum epubFormat {
+  reflowable
+  fixedlayout
+}
+
+enum dispatchStatus {
+  readable
+  forbidden
 }
