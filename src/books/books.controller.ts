@@ -1,4 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
+import { CreateUserInput } from 'src/users/dto/create-user.input';
 import { BooksService } from './books.service';
 
 @Controller('books')

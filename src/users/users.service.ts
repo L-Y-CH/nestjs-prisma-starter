@@ -13,18 +13,42 @@ export class UsersService {
   ) {}
 
 
-  async getUsers(){
+  async getUsers(withBook:boolean = true ,withItem:boolean = true){
     return this.prisma.user.findMany({
-      select:{
-        firstname:true,
-        lastname:true,
-        email:true,
-        // updatedAt:true
-      }
+      // select:{
+      //   id:true,
+      //   firstname:true,
+      //   lastname:true,
+      //   email:true,
+      //   book:{
+      //     where: {
+      //       status: "readable"
+      //     },
+      //     select:{
+      //       bookUniId:true,
+      //       progress:true,
+      //       item:true
+      //     }
+      //   }
+      // }
+      include:{
+        book: withBook? {
+          // select: {
+          //   bookUniId:true,
+          //   progress:true,
+          // },
+          // where: {
+          //   status: "readable"
+          // },
+          include: {
+            item: withItem
+          }
+        } : false
+      } 
     })
   }
 
-  async createUser(newUser: Prisma.UserCreateInput){
+  async createUser(newUser: Prisma.UserCreateInput) {
 
     return this.prisma.user.upsert({
       where: {
@@ -37,7 +61,6 @@ export class UsersService {
         book: {
           create: {
             bookUniId: 'G000000001_reflowable_normal',
-            // itemId: 'G000000001',
             ownerId: newUser.id,
             curVersion: 'V1.0.0',
             progress: '',
@@ -58,6 +81,20 @@ export class UsersService {
           }
         }
       }),
+      select: {
+        id: true,
+        email: true,
+        book: {
+          select: {
+            bookUniId: true,
+            progress: true,
+            item: true
+          },
+          where: {
+            status: "readable"
+          }
+        }
+      }
     });
   }
 

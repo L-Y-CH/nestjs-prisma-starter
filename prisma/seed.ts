@@ -2,9 +2,8 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-async function main() {
+async function user() {
   await prisma.user.deleteMany();
-  await prisma.post.deleteMany();
 
   console.log('Seeding...');
 
@@ -14,14 +13,7 @@ async function main() {
       firstname: 'Lisa',
       lastname: 'Simpson',
       password: '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm', // secret42
-      role: 'USER',
-      posts: {
-        create: {
-          title: 'Join us for Prisma Day 2019 in Berlin',
-          content: 'https://www.prisma.io/day/',
-          published: true,
-        },
-      },
+      role: 'USER'
     },
   });
   const user2 = await prisma.user.create({
@@ -31,20 +23,6 @@ async function main() {
       lastname: 'Simpson',
       role: 'ADMIN',
       password: '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm', // secret42
-      posts: {
-        create: [
-          {
-            title: 'Subscribe to GraphQL Weekly for community news',
-            content: 'https://graphqlweekly.com/',
-            published: true,
-          },
-          {
-            title: 'Follow Prisma on Twitter',
-            content: 'https://twitter.com/prisma',
-            published: false,
-          },
-        ],
-      },
     },
   });
 
@@ -55,27 +33,27 @@ async function main() {
       lastname: 'Simpson123',
       role: 'ADMIN',
       password: '$2b$10$EpRnTzVlqHNP0.fUbXUwSOyuiXe/QLSUG6xNekdHgTGmrpHEfIoxm', // secret42
-      posts: {
-        create: [
-          {
-            title: 'Subscribe to GraphQL Weekly for community news',
-            content: 'https://graphqlweekly.com/',
-            published: true,
-          },
-          {
-            title: 'Follow Prisma on Twitter',
-            content: 'https://twitter.com/prisma',
-            published: false,
-          },
-        ],
-      },
     },
   });
 
   console.log({ user1, user2, user3 });
 }
 
-main()
+async function item() {
+  await prisma.item.deleteMany();
+
+  const item1 = await prisma.item.create({
+    data:{
+      id: 'G00000001',
+      info: {}
+    }
+  });
+
+  console.log(item1);
+
+}
+
+Promise.all([user(), item()])
   .catch((e) => console.error(e))
   .finally(async () => {
     await prisma.$disconnect();

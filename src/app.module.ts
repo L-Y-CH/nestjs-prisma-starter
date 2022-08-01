@@ -13,6 +13,8 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GqlConfigService } from './gql-config.service';
 import { BooksController } from './books/books.controller';
 import { BooksService } from './books/books.service';
+import { BooksModule } from './books/books.module';
+import { ShelfModule } from './shelf/shelf.module';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import { BooksService } from './books/books.service';
 
     AuthModule,
     UsersModule,
+    BooksModule,
+    ShelfModule,
   ],
   controllers: [AppController, BooksController],
   providers: [AppService, AppResolver, BooksService],
