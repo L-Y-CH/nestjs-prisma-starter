@@ -17,10 +17,4 @@ export class BooksController {
         return this.booksServcie.getAllItems();
     }
 
-    @Get('just/a/test')
-    test(){
-        return true;
-    }
-
-
 }
